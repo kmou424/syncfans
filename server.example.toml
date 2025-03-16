@@ -1,0 +1,62 @@
+[config]
+# 监听地址 / listen address
+listen = "127.0.0.1:16380"
+# 通信密钥 / secret key
+secret = "secret"
+
+# 回报处理间隔 (毫秒)
+# report interval (milliseconds)
+# 避免设置得过低导致频繁调整风扇转速
+# avoid setting it too low to cause frequent adjustment of fan speed
+interval = 1000
+
+# 控制平滑强度，值越小越平滑
+# smoothing factor, the smaller the value, the smoother the control
+smoothing_factor = 0.2
+
+# 范例 / examples
+# 保守模式（注重静音）
+# curve_type: s-curve
+# curve_factor: 1.0
+# dead_zone_ratio: 0.1
+
+# 性能模式（快速响应）
+# curve_type: aggressive
+# curve_factor: 5.0
+# dead_zone_ratio: 0.03
+
+[default]
+# 线性转速曲线 / linear speed curve
+# curve_type: linear
+# curve_factor is useless
+
+# 三阶平滑步进曲线 / s-curve speed curve
+# curve_type: s-curve
+# curve_factor is useless
+
+# 指数转速曲线 / exponential speed curve
+# curve_type: exponential
+# curve_factor: >1时中间平缓，<1时中间陡峭 / >1 makes the middle smooth, <1 makes the middle steep
+
+# 激进转速曲线 / aggressive speed curve
+# curve_type: aggressive
+# curve_factor: 值越大临界区越陡峭 / the steepness of the dead zone
+
+# 转速曲线类型 / curve type
+# linear: 线性
+# s-curve: 平滑曲线
+# exponential: 指数曲线
+# aggressive: 激进曲线
+curve_type = "s-curve"
+# 转速曲线因子 / curve factor
+curve_factor = 1.8
+dead_zone_ratio = 0.1
+
+# 注册一个风扇 / register a fan
+[sysfans.fan1]
+# 风扇的 sysfs 节点路径 (PWM) / the sysfs node path of the fan
+path = "/sys/class/hwmon/hwmon4/pwm1"
+# 风扇的最大转速 (节点值) / the maximum speed of the fan (node value)
+max_speed = 255
+# 风扇的最小转速 (节点值, 注意防停转) / the minimum speed of the fan (node value, note the anti-stop)
+min_speed = 30

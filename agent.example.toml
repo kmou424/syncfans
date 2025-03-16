@@ -1,0 +1,36 @@
+[config]
+server = "http://127.0.0.1:16380/report"
+secret = "secret"
+fan = "fan1"
+# 临界温度
+# critical temperature range: unit: Celsius
+critical_temp_range = [40.0, 75.0]
+# 临界温度的边界缓冲
+# critical temperarture margin, unit: Celsius
+critical_margin = 3.0
+
+# 覆盖曲线参数, 如果开启, 覆盖 server.toml 中的曲线参数
+# override curve parameters, if true, override the curve parameters in server.toml
+override_curve = true
+# 说明见 server.toml
+# description see server.toml
+curve_type = "s-curve"
+curve_factor = 1.0
+dead_zone_ratio = 0.1
+
+# 变量命名必须匹配上报信息结构 proto.ReportSysInfo 中的字段名
+# the variable name must match the field name of the proto.ReportSysInfo struct
+# example:
+# [sysinfo.fan]
+# method = "shell" # ["shell", "file"]
+# query = "nvidia-smi --query-gpu=fan.speed --format=csv,noheader" # shell command or file path
+# type = "float" # ["float", "int", "string"]
+[sysinfo.temperature]
+method = "shell"
+query = "nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader"
+type = "float"
+
+[sysinfo.usage]
+method = "shell"
+query = "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader"
+type = "float"

@@ -1,0 +1,78 @@
+version: '3'
+
+vars:
+  OUTPUT_DIR: "./build"
+
+tasks:
+  default:
+    cmds:
+      - task: build
+
+  build:
+    desc: "build all versions"
+    cmds:
+      - task: build:debug
+      - task: build:release
+
+  build:debug:
+    desc: "build debug version"
+    cmds:
+      - task: build-common
+        vars:
+          BUILD_TYPE: "debug"
+          LDFLAGS: ""
+          GCFLAGS: "-N -l"
+
+  build:release:
+    desc: "build release version"
+    cmds:
+      - task: build-common
+        vars:
+          BUILD_TYPE: "release"
+          LDFLAGS: "-s -w"
+          GCFLAGS: ""
+
+  build-common:
+    desc: "build common"
+    internal: true
+    vars:
+      BUILD_TYPE: "{{.BUILD_TYPE}}"
+      LDFLAGS: "{{.LDFLAGS}}"
+      GCFLAGS: "{{.GCFLAGS}}"
+    cmds:
+      - for:
+          matrix:
+            OS: ["linux", "windows", "darwin"]
+            ARCH: ["amd64", "arm64"]
+        task: build-agent
+        vars:
+          OS: "{{.ITEM.OS}}"
+          ARCH: "{{.ITEM.ARCH}}"
+          BUILD_TYPE: "{{.BUILD_TYPE}}"
+          LDFLAGS: "{{.LDFLAGS}}"
+          GCFLAGS: "{{.GCFLAGS}}"
+      - for:
+          matrix:
+            OS: ["linux", "windows", "darwin"]
+            ARCH: ["amd64", "arm64"]
+        task: build-server
+        vars:
+          OS: "{{.ITEM.OS}}"
+          ARCH: "{{.ITEM.ARCH}}"
+          BUILD_TYPE: "{{.BUILD_TYPE}}"
+          LDFLAGS: "{{.LDFLAGS}}"
+          GCFLAGS: "{{.GCFLAGS}}"
+
+  build-server:
+    desc: "build syncfans_server"
+    internal: true
+    cmds:
+      - mkdir -p {{.OUTPUT_DIR}}/{{.BUILD_TYPE}}
+      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -trimpath -gcflags="{{.GCFLAGS}}" -ldflags="{{.LDFLAGS}}" -o {{.OUTPUT_DIR}}/{{.BUILD_TYPE}}/syncfans_server_{{.OS}}_{{.ARCH}}{{if eq .OS "windows"}}.exe{{end}} ./cmd/server
+
+  build-agent:
+    desc: "build syncfans_agent"
+    internal: true
+    cmds:
+      - mkdir -p {{.OUTPUT_DIR}}/{{.BUILD_TYPE}}
+      - GOOS={{.OS}} GOARCH={{.ARCH}} go build -trimpath -gcflags="{{.GCFLAGS}}" -ldflags="{{.LDFLAGS}}" -o {{.OUTPUT_DIR}}/{{.BUILD_TYPE}}/syncfans_agent_{{.OS}}_{{.ARCH}}{{if eq .OS "windows"}}.exe{{end}} ./cmd/agent
