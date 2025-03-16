@@ -40,9 +40,6 @@ func (fi *FanInfo) CalcTargetSpeed(avgTemp float64) (speed int, force bool) {
 
 	// Immediate boundary handling
 	// 边界处理
-	if avgTemp == 0 { // 首次启动
-		return fi.MaxSpeed, true
-	}
 	if avgTemp <= thresholdLower {
 		return fi.MinSpeed, true
 	}
@@ -100,13 +97,13 @@ func (fi *FanInfo) ApplySpeed(finalSpeed int) error {
 		return nil
 	}
 
-	slog.Infof("Applying speed %d to %s", finalSpeed, fi.Path)
+	slog.Debugf("Applying speed %d to %s", finalSpeed, fi.Path)
 
 	if err := sysfskit.WriteInt(fi.Path, finalSpeed); err != nil {
 		return caused.FileSystemError(ero.Wrap(err, "failed to write speed to %s", fi.Path))
 	}
 
-	slog.Debugf("Applied speed %d to %s", finalSpeed, fi.Path)
+	slog.Infof("Applied speed %d to %s", finalSpeed, fi.Path)
 
 	// Update last target
 	// 更新上一次的目标转速
