@@ -184,7 +184,7 @@ in
 
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${cfg.package}/bin/syncfans-agent -config ${configFile}";
+        ExecStart = "${cfg.package}/bin/agent -config ${configFile}";
         Restart = "always";
         RestartSec = "10s";
         # If agent disconnects, restart after 10 seconds to ensure server cleans up

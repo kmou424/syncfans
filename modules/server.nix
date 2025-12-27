@@ -154,7 +154,7 @@ in
 
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${cfg.package}/bin/syncfans-server -config ${configFile}";
+        ExecStart = "${cfg.package}/bin/server -config ${configFile}";
         Restart = "always";
         RestartSec = "10s";
         Environment = mapAttrsToList (name: value: "${name}=${value}") cfg.environment;
