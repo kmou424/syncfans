@@ -12,10 +12,10 @@ type AfterProcess interface {
 }
 
 func parseBothFileText(text string) (string, error) {
-	if !strings.HasSuffix(text, "file:") {
+	if !strings.HasPrefix(text, "file:") {
 		return text, nil
 	}
-	path := strings.TrimSuffix(text, "file:")
+	path := strings.TrimPrefix(text, "file:")
 	if !fsutil.IsFile(path) {
 		return "", caused.FileNotFoundError("file not found")
 	}
