@@ -189,10 +189,28 @@ in
         RestartSec = "10s";
         # If agent disconnects, restart after 10 seconds to ensure server cleans up
         ExecStop = "${pkgs.coreutils}/bin/sleep 10";
-        Environment = mapAttrsToList (name: value: "${name}=${value}") cfg.environment;
-        # Add nvidia-smi to PATH if required
-        # Note: nvidia-smi is typically available in system PATH when NVIDIA drivers are installed
-        # If not found, ensure hardware.nvidia.enable is set in NixOS config
+        # Set PATH environment variable (Path option is deprecated in systemd)
+        # Include bash for sh command execution, nvidia-smi, and system paths
+        Environment =
+          let
+            basePath = makeBinPath [
+              pkgs.bash
+              pkgs.coreutils
+              pkgs.findutils
+              pkgs.gnugrep
+              pkgs.gnused
+              pkgs.systemd
+            ];
+            systemPath = "/run/current-system/sw/bin";
+            nvidiaPath = optionalString (
+              cfg.requiresNvidia && config.hardware.nvidia.enabled
+            ) "${config.hardware.nvidia.package.bin}/bin:";
+            fullPath = "${nvidiaPath}${basePath}:${systemPath}";
+            envVars = cfg.environment // {
+              PATH = fullPath;
+            };
+          in
+          mapAttrsToList (name: value: "${name}=${value}") envVars;
       };
     };
   };
