@@ -24,6 +24,21 @@ type SysInfoBase struct {
 	Type   string `toml:"type"`
 }
 
-func GetAgentConfig() *Agent {
+func (a *Agent) afterProcess() error {
+	var err error
+	a.Config.Secret, err = parseBothFileText(a.Config.Secret)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAgentConfig() (cfg *Agent) {
+	defer func() {
+		err := cfg.afterProcess()
+		if err != nil {
+			panic(err)
+		}
+	}()
 	return getConfig[Agent]()
 }

@@ -25,6 +25,21 @@ type FanParams struct {
 	MinSpeed int    `toml:"min_speed"`
 }
 
-func GetServerConfig() *Server {
+func (s *Server) afterProcess() error {
+	var err error
+	s.Config.Secret, err = parseBothFileText(s.Config.Secret)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetServerConfig() (cfg *Server) {
+	defer func() {
+		err := cfg.afterProcess()
+		if err != nil {
+			panic(err)
+		}
+	}()
 	return getConfig[Server]()
 }

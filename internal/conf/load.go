@@ -1,10 +1,11 @@
 package conf
 
 import (
+	"reflect"
+
 	"github.com/gookit/goutil/fsutil"
 	"github.com/kmou424/syncfans/internal/caused"
 	"github.com/pelletier/go-toml/v2"
-	"reflect"
 )
 
 var config any = nil
@@ -29,15 +30,15 @@ func AutoLoad[T any](searchPaths []string) error {
 	return nil
 }
 
-func Load[T any](searchPaths []string) (T, error) {
+func Load[T any](searchPaths []string) (*T, error) {
 	cfgType := reflect.TypeFor[T]()
-	cfg := reflect.New(cfgType).Elem().Interface().(T)
+	cfg := ptr(reflect.New(cfgType).Elem().Interface().(T))
 
 	for _, searchPath := range searchPaths {
 		if !fsutil.IsFile(searchPath) {
 			continue
 		}
-		err := loadConfig(searchPath, &cfg)
+		err := loadConfig(searchPath, cfg)
 		if err != nil {
 			return cfg, err
 		}
@@ -58,3 +59,5 @@ func loadConfig[T any](filePath string, cfg *T) error {
 	}
 	return nil
 }
+
+func ptr[T any](v T) *T { return &v }
