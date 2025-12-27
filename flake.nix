@@ -24,9 +24,7 @@
           version = "0.1.0";
           src = ./.;
 
-          # vendorHash will be calculated automatically on first build
-          # If you get a hash mismatch, replace this with the suggested hash
-          vendorHash = "";
+          vendorHash = "sha256-8bg6caSu2udAEejh3PbjiUjemAA3qGLj4AgVxej/LO4=";
 
           subPackages = [ "cmd/server" ];
 
@@ -43,9 +41,7 @@
           version = "0.1.0";
           src = ./.;
 
-          # vendorHash will be calculated automatically on first build
-          # If you get a hash mismatch, replace this with the suggested hash
-          vendorHash = "";
+          vendorHash = "sha256-8bg6caSu2udAEejh3PbjiUjemAA3qGLj4AgVxej/LO4=";
 
           subPackages = [ "cmd/agent" ];
 
