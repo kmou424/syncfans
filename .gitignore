@@ -1,6 +1,6 @@
-.idea
-
-build/
-
-server.toml
-agent.toml
+result
+result-*
+.direnv
+.envrc
+*.toml
+!*.example.toml
