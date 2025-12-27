@@ -14,11 +14,11 @@ func getConfig[T any]() *T {
 	if config == nil {
 		panic(caused.RuntimeError("config not loaded"))
 	}
-	ret, ok := config.(T)
+	ret, ok := config.(*T)
 	if !ok {
 		panic(caused.TypeError("config type not match"))
 	}
-	return &ret
+	return ret
 }
 
 func AutoLoad[T any](searchPaths []string) error {
