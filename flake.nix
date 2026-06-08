@@ -28,6 +28,11 @@
 
           subPackages = [ "cmd/server" ];
 
+          preBuild = ''
+            GOPROXY="https://goproxy.cn,direct"
+            export GOPROXY
+          '';
+
           meta = with pkgs.lib; {
             description = "SyncFans server - Fan speed control server";
             homepage = "https://github.com/kmou424/syncfans";
@@ -44,6 +49,11 @@
           vendorHash = "sha256-8bg6caSu2udAEejh3PbjiUjemAA3qGLj4AgVxej/LO4=";
 
           subPackages = [ "cmd/agent" ];
+
+          preBuild = ''
+            GOPROXY="https://goproxy.cn,direct"
+            export GOPROXY
+          '';
 
           meta = with pkgs.lib; {
             description = "SyncFans agent - GPU temperature monitoring agent";
